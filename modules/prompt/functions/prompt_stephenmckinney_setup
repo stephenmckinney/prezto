@@ -1,0 +1,99 @@
+#
+# A Solarized theme that supports Ruby and Virtualenv.
+#
+# Authors:
+#   Steve McKinney <stevemckinney@gmail.com>
+#
+# Features:
+#   * Prompt colors based on Solarized
+#     <http://ethanschoonover.com/solarized>.
+#   * PROMPT displays directory and git info.
+#   * RPROMPT displays Ruby info and Virtualenv info
+#   * Last command success displays a gray arrow and last command failure
+#     displays a red skull.
+#   * Shows user@hostname if connected through SSH.
+
+export VIRTUAL_ENV_DISABLE_PROMPT=true
+function virtualenv_info {
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    print "[%B%F{green}${VIRTUAL_ENV:t}%f%b] "
+  fi
+}
+
+function prompt_stephenmckinney_precmd {
+  if (( $+functions[git-info] )); then
+    git-info
+  fi
+
+  if (( $+functions[ruby-info] )); then
+    ruby-info
+  fi
+}
+
+function prompt_stephenmckinney_setup {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent subst)
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  # Add hook for calling git-info before each command.
+  add-zsh-hook precmd prompt_stephenmckinney_precmd
+
+  # Solarized TERMCOLs
+  typeset -gA _SM_COLORS
+  _SM_COLORS=(
+    base03    "%B%F{black}"
+    base02    "%F{black}"
+    base01    "%B%F{green}"
+    base00    "%B%F{yellow}"
+    base0     "%B%F{blue}"
+    base1     "%B%F{cyan}"
+    base2     "%F{white}"
+    base3     "%B%F{white}"
+    yellow    "%F{yellow}"
+    orange    "%B%F{red}"
+    red       "%F{red}"
+    magenta   "%F{magenta}"
+    violet    "%B%F{magenta}"
+    blue      "%F{blue}"
+    cyan      "%F{cyan}"
+    green     "%F{green}"
+  )
+
+  # Editor
+  zstyle ':prezto:module:editor:info:completing' format '${_SM_COLORS[red]}...%f'
+
+  # Git prompt format:
+  #   branch or position or commit-SHA
+  #   action
+  #   ahead
+  #   behind
+  #   unmerged
+  #   stashed
+  #   clean/dirty
+  zstyle ':prezto:module:git:info' verbose 'yes'
+  zstyle ':prezto:module:git:info:action' format " ${_SM_COLORS[magenta]}%s%f"
+  zstyle ':prezto:module:git:info:ahead' format " %${_SM_COLORS[base00]}⬆%f%%b"
+  zstyle ':prezto:module:git:info:behind' format " %${_SM_COLORS[base00]}⬇%f%%b"
+  zstyle ':prezto:module:git:info:branch' format "%${_SM_COLORS[orange]}%b%f%%b"
+  zstyle ':prezto:module:git:info:clean' format " ${_SM_COLORS[green]}✔%f"
+  zstyle ':prezto:module:git:info:commit' format "${_SM_COLORS[cyan]}%.7c%f"
+  zstyle ':prezto:module:git:info:dirty' format " %${_SM_COLORS[yellow]}✖:%D%f"
+  zstyle ':prezto:module:git:info:position' format "${_SM_COLORS[cyan]}%p%f"
+  zstyle ':prezto:module:git:info:stashed' format " %${_SM_COLORS[base1]}✭%f%%b"
+  zstyle ':prezto:module:git:info:unmerged' format " %${_SM_COLORS[base1]}⬊%f%%b"
+  zstyle ':prezto:module:git:info:keys' format \
+    'prompt'  ' $(coalesce "%b" "%p" "%c")%s%A%B%U%S%C%D'
+
+  # Ruby info
+  zstyle ':prezto:module:ruby:info:version' format '%v'
+
+  PROMPT="${_SM_COLORS[green]}${SSH_TTY:+[%n@%m]}%f${_SM_COLORS[cyan]}%~%f"'${(e)git_info[prompt]}'" %(?,${_SM_COLORS[base01]}❯%f%b,${_SM_COLORS[red]}☠%f) "
+  RPROMPT="[${_SM_COLORS[base01]}"'${ruby_info[version]}'"%f%b] "'$(virtualenv_info)'""
+  SPROMPT="zsh: correct ${_SM_COLORS[red]}%R%f to ${_SM_COLORS[green]}%r%f [nyae]? "
+}
+
+prompt_stephenmckinney_setup "$@"
+

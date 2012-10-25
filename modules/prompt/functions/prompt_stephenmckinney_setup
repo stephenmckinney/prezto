@@ -15,7 +15,7 @@
 
 function rvm_info {
   if [[ -e ~/.rvm/bin/rvm-prompt ]]; then
-    print '[${_SM_COLORS[base01]}$(~/.rvm/bin/rvm-prompt i v g)%f%b] '
+    print '[${_SM_COLORS[base01]}$(~/.rvm/bin/rvm-prompt i v p g)%f%b] '
   fi
 }
 

@@ -40,7 +40,10 @@ function prompt_stephenmckinney_setup {
   unsetopt XTRACE KSH_ARRAYS
   prompt_opts=(cr percent subst)
 
+  # Load required functions.
   autoload -Uz add-zsh-hook
+
+  # Add hook for calling git-info before each command.
   add-zsh-hook precmd prompt_stephenmckinney_precmd
 
   # Solarized TERMCOLs
@@ -64,6 +67,9 @@ function prompt_stephenmckinney_setup {
     green     "%F{green}"
   )
 
+  # Editor
+  zstyle ':prezto:module:editor:info:completing' format '${_SM_COLORS[red]}...%f'
+
   # Git prompt format:
   #   branch or position or commit-SHA
   #   action
@@ -72,7 +78,6 @@ function prompt_stephenmckinney_setup {
   #   unmerged
   #   stashed
   #   clean/dirty
-  zstyle ':prezto:module:editor:info:completing' format "${_SM_COLORS[red]}...%f"
   zstyle ':prezto:module:git:info:action' format " ${_SM_COLORS[magenta]}%s%f"
   zstyle ':prezto:module:git:info:ahead' format " %${_SM_COLORS[base00]}⬆%f%%b"
   zstyle ':prezto:module:git:info:behind' format " %${_SM_COLORS[base00]}⬇%f%%b"

@@ -1,5 +1,5 @@
 #
-# A Solarized theme that support RVM and Virtualenv.
+# A Solarized theme that supports Ruby and Virtualenv.
 #
 # Authors:
 #   Steve McKinney <stevemckinney@gmail.com>
@@ -8,16 +8,10 @@
 #   * Prompt colors based on Solarized
 #     <http://ethanschoonover.com/solarized>.
 #   * PROMPT displays directory and git info.
-#   * RPROMPT displays RVM info and Virtualenv info
+#   * RPROMPT displays Ruby info and Virtualenv info
 #   * Last command success displays a gray arrow and last command failure
 #     displays a red skull.
 #   * Shows user@hostname if connected through SSH.
-
-function rvm_info {
-  if [[ -e ~/.rvm/bin/rvm-prompt ]]; then
-    print '[${_SM_COLORS[base01]}$(~/.rvm/bin/rvm-prompt i v p g)%f%b] '
-  fi
-}
 
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 function virtualenv_info {
@@ -27,11 +21,12 @@ function virtualenv_info {
 }
 
 function prompt_stephenmckinney_precmd {
-  setopt LOCAL_OPTIONS
-  unsetopt XTRACE KSH_ARRAYS
-
   if (( $+functions[git-info] )); then
     git-info
+  fi
+
+  if (( $+functions[ruby-info] )); then
+    ruby-info
   fi
 }
 
@@ -91,8 +86,11 @@ function prompt_stephenmckinney_setup {
   zstyle ':prezto:module:git:info:keys' format \
     'prompt'  ' $(coalesce "%b" "%p" "%c")%s%A%B%U%S%C%D'
 
+  # Ruby info
+  zstyle ':prezto:module:ruby:info:version' format '%v'
+
   PROMPT="${_SM_COLORS[green]}${SSH_TTY:+[%n@%m]}%f${_SM_COLORS[cyan]}%~%f"'${(e)git_info[prompt]}'" %(?,${_SM_COLORS[base01]}❯%f%b,${_SM_COLORS[red]}☠%f) "
-  RPROMPT="$(rvm_info)"'$(virtualenv_info)'""
+  RPROMPT="[${_SM_COLORS[base01]}"'${ruby_info[version]}'"%f%b] "'$(virtualenv_info)'""
   SPROMPT="zsh: correct ${_SM_COLORS[red]}%R%f to ${_SM_COLORS[green]}%r%f [nyae]? "
 }
 

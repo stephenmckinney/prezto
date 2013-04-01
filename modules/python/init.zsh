@@ -19,9 +19,11 @@ elif (( $+commands[pyenv] )); then
 # ~/Library/Python on Mac OS X and ~/.local elsewhere, to PATH.
 else
   if [[ "$OSTYPE" == darwin* ]]; then
-    # Prepend /usr/local/share/python to PATH for Hombrew'd Python
+    # Prepend /usr/local/share/python{3} to PATH for Hombrew'd Python
     # see: https://github.com/mxcl/homebrew/wiki/Homebrew-and-Python
-    if [[ -f /usr/local/bin/python ]]; then
+    if [[ -f /usr/local/bin/python3 ]]; then
+      path=(/usr/local/share/python3 $path)
+    elif [[ -f /usr/local/bin/python ]]; then
       path=(/usr/local/share/python $path)
     else
       path=($HOME/Library/Python/*/bin(N) $path)

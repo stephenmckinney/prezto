@@ -73,6 +73,7 @@ function prompt_stephenmckinney_setup {
   #   unmerged
   #   stashed
   #   clean/dirty
+  zstyle ':prezto:module:git:info' verbose 'yes'
   zstyle ':prezto:module:git:info:action' format " ${_SM_COLORS[magenta]}%s%f"
   zstyle ':prezto:module:git:info:ahead' format " %${_SM_COLORS[base00]}⬆%f%%b"
   zstyle ':prezto:module:git:info:behind' format " %${_SM_COLORS[base00]}⬇%f%%b"
